@@ -1,58 +1,18 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:testingproback/food_items/food_item.dart';
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
-}
-
-Future<void> sendFCMNotification(String userToken) async {
-  final String serverKey = 'AAAAKi-BiEg:APA91bEncuK4sR48KUuO7FE58apIIKk89vkOQ1jqPRxAdkhImu33yMkIvZGEbTXYPhJfb7vLraorDq6XrgwXJPqDWU-LjpBo7q8zph7SruNAYqxxl0oHpuHqE-1l-lhGoY9ackjHDpBs';
-
-  final String fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
-
-  final Map<String, dynamic> data = {
-    'to': userToken,
-    'notification': {
-      'title': 'Order Ready for Pickup',
-      'body': 'Your order is ready for pickup.',
-    },
-    'data': {
-      // You can include additional data if needed
-    },
-  };
-
-  final http.Response response = await http.post(
-    Uri.parse(fcmEndpoint),
-    headers: <String, String>{
-      'Content-Type': 'application/json',
-      'Authorization': 'key=$serverKey',
-    },
-    body: jsonEncode(data),
-  );
-
-  if (response.statusCode == 200) {
-    print('FCM notification sent successfully.');
-  } else {
-    print('Failed to send FCM notification. Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-  }
-}
 
 class SuccessScreen extends StatefulWidget {
   final String transactionId;
   final List<FoodItem> cart;
   final double totalAmount;
-  final Function(String) onOrderReady;
 
   SuccessScreen({
     required this.transactionId,
     required this.cart,
-    required this.totalAmount, required this.onOrderReady,
+    required this.totalAmount,
   });
 
   @override
@@ -65,61 +25,46 @@ class _SuccessScreenState extends State<SuccessScreen> {
   @override
   void initState() {
     super.initState();
-
-    _configureFirebaseMessaging();
-
+    _getAndStoreUserToken();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 
-  void _configureFirebaseMessaging() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
+  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    print("Handling a background message: ${message.messageId}");
+    // Add your logic to handle the background message
+  }
 
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-        _showNotificationDialog(
-          context,
-          message.notification?.title,
-          message.notification?.body,
-        );
+
+
+
+  Future<void> _getAndStoreUserToken() async {
+    try {
+      // Get the FCM token
+      String? userToken = await _firebaseMessaging.getToken();
+
+      if (userToken != null && userToken.isNotEmpty) {
+        // Store the user token in Firestore
+        await _storeUserToken(userToken);
+      } else {
+        print('Failed to get FCM token.');
       }
-    });
-
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-    });
-
-    Future generateDeviceRegistrationToken() async {
-      var orderId = widget.transactionId;
-      String? deviceToken = await _firebaseMessaging.getToken();
-
-      FirebaseFirestore.instance
-          .collection('pending_orders')
-          .doc(orderId)
-          .update({
-        "userDeviceToken": deviceToken,
-      });
+    } catch (e) {
+      print('Error getting and storing FCM token: $e');
     }
   }
 
-  void _showNotificationDialog(BuildContext context, String? title, String? body) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title ?? ''),
-          content: Text(body ?? ''),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> _storeUserToken(String userToken) async {
+    try {
+
+      // Store the user token in Firestore
+      await FirebaseFirestore.instance.collection('orders').doc(widget.transactionId).set({
+        'userToken': userToken,
+      }, SetOptions(merge: true));
+
+      print('User token stored in Firestore: $userToken');
+    } catch (e) {
+      print('Error storing user token: $e');
+    }
   }
 
   @override

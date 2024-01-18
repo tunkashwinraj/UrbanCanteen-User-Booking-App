@@ -2,15 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:testingproback/food_items/food_item.dart';
 import 'package:testingproback/phonepe/PhonePePayment.dart';
-import 'package:testingproback/screens/order_ready_screen.dart';
 import '../phonepe/success_screen.dart';
 
 class CheckoutPage extends StatefulWidget {
   final List<FoodItem> cart;
   final String transactionId;
-  final String userFCMToken;
 
-  CheckoutPage({required this.cart, required this.transactionId, required this.userFCMToken});
+  CheckoutPage({required this.cart, required this.transactionId});
 
   @override
   _CheckoutPageState createState() => _CheckoutPageState();
@@ -21,7 +19,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   String paymentMethod = 'Credit Card';
 
   // Reference to the 'orders' collection in Firestore
-  final CollectionReference ordersCollection = FirebaseFirestore.instance.collection('orders');
+  final CollectionReference ordersCollection =
+  FirebaseFirestore.instance.collection('orders');
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +41,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     title: Text(widget.cart[index].name),
                     subtitle: Text(widget.cart[index].description),
                     trailing: Text(
-                      '\₹${widget.cart[index].price.toStringAsFixed(2)}',
-                    ),
+                        '\₹${widget.cart[index].price.toStringAsFixed(2)}'),
                   );
                 },
               ),
@@ -59,8 +57,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     builder: (context) => SuccessScreen(
                       transactionId: widget.transactionId,
                       cart: widget.cart,
-                      totalAmount: calculateTotalPrice(widget.cart), onOrderReady: (String ) {  },
-
+                      totalAmount: calculateTotalPrice(widget.cart),
                     ),
                   ),
                 );
@@ -101,6 +98,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       print('Error storing order details: $e');
     }
   }
+
 
   double calculateTotalPrice(List<FoodItem> cart) {
     double total = 0;

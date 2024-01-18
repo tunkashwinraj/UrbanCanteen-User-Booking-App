@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:testingproback/food_items/food_item.dart';
 import 'package:testingproback/screens/checkout_page.dart';
@@ -13,22 +12,8 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  late String userFCMToken;
-
-  @override
-  void initState() {
-    super.initState();
-    getUserFCMToken();  // Call a method to obtain userFCMToken
-  }
-  // Method to obtain userFCMToken
-  Future<void> getUserFCMToken() async {
-    userFCMToken = await FirebaseMessaging.instance.getToken() ?? '';
-    print('User FCM Token: $userFCMToken');
-  }
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Shopping Cart'),
@@ -75,7 +60,7 @@ class _CartPageState extends State<CartPage> {
                     MaterialPageRoute(
                       builder: (context) => CheckoutPage(
                         cart: widget.cart,
-                        transactionId: "transaction_${DateTime.now().millisecondsSinceEpoch}", userFCMToken: userFCMToken,
+                        transactionId: "transaction_${DateTime.now().millisecondsSinceEpoch}",
                       ),
                     ),
                   );
