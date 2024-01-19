@@ -12,7 +12,6 @@ void main() async {
     name: 'name-here',
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  //FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MyApp());
 }
 
@@ -30,9 +29,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-//
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   print("Handling a background message: ${message.messageId}");
-//   // Add your logic to handle the background message
-// }
+
 

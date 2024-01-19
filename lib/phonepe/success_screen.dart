@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:testingproback/food_items/food_item.dart';
+import 'package:testingproback/screens/order_ready_page.dart';
 
 class SuccessScreen extends StatefulWidget {
   final String transactionId;
@@ -22,20 +23,42 @@ class SuccessScreen extends StatefulWidget {
 class _SuccessScreenState extends State<SuccessScreen> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
+  bool _backgroundMessageReceived = false;
+
   @override
   void initState() {
     super.initState();
     _getAndStoreUserToken();
+
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      // Handle foreground messages
+      print("Handling a foreground message: ${message.messageId}");
+      _handleForegroundMessage(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // Handle notification tapped when the app is in the background
+      print("Handling a message opened app: ${message.messageId}");
+      _handleForegroundMessage(message);
+    });
   }
 
   Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     print("Handling a background message: ${message.messageId}");
-    // Add your logic to handle the background message
+    // Set a flag to indicate that a background message was received
+    _backgroundMessageReceived = true;
+    // You can add your logic to handle the background message here
   }
 
-
-
+  void _handleForegroundMessage(RemoteMessage message) {
+    // Add logic to navigate to the desired page when a notification is tapped or received in the foreground
+    if (_backgroundMessageReceived) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const OrderReadyPage()));
+      // Reset the flag after handling the background message
+      _backgroundMessageReceived = false;
+    }
+  }
 
   Future<void> _getAndStoreUserToken() async {
     try {
@@ -55,7 +78,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   Future<void> _storeUserToken(String userToken) async {
     try {
-
       // Store the user token in Firestore
       await FirebaseFirestore.instance.collection('orders').doc(widget.transactionId).set({
         'userToken': userToken,
