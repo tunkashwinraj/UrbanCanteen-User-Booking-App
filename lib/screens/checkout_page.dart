@@ -54,7 +54,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 // Navigate to the success page
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SuccessScreen(
+                    builder: (context) => PhonePePayment(
                       transactionId: widget.transactionId,
                       cart: widget.cart,
                       totalAmount: calculateTotalPrice(widget.cart),

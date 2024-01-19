@@ -9,9 +9,12 @@ import 'package:testingproback/food_items/food_item.dart';
 import 'package:testingproback/phonepe/success_screen.dart';
 
 class PhonePePayment extends StatefulWidget {
+  final String transactionId;
   final List<FoodItem> cart;
+  final double totalAmount;
 
-  const PhonePePayment({super.key, required this.cart});
+
+  const PhonePePayment({super.key, required this.cart, required this.transactionId, required this.totalAmount});
 
   @override
   State<PhonePePayment> createState() => _PhonePePaymentState();
@@ -19,8 +22,9 @@ class PhonePePayment extends StatefulWidget {
 
 class _PhonePePaymentState extends State<PhonePePayment> {
 
+
   String environment = "UAT_SIM";
-      String appId = "";
+      String appId = "com.example.testingproback";
   String merchantId = "PGTESTPAYUAT";
       bool enableLogging = true;
 
@@ -28,7 +32,7 @@ class _PhonePePaymentState extends State<PhonePePayment> {
       String saltKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
       String saltIndex = "1";
 
-      String callbackurl = "https://webhook.site/0095e8a0-2fbb-47d5-b69e-b5b66336a12b";
+      String callbackurl = "https://webhook.site/eb14caa8-8165-4d30-9eed-c20c96933406";
 
       String body = "";
       String apiEndPoint = "/pg/v1/pay";
@@ -77,7 +81,8 @@ class _PhonePePaymentState extends State<PhonePePayment> {
       body: Column(
         children: [
           ElevatedButton(
-              onPressed: (){
+              onPressed: () async {
+                await phonepeInit();
                 startPgTransaction();
           },
               child: Text("Start Transaction")),
@@ -90,17 +95,19 @@ class _PhonePePaymentState extends State<PhonePePayment> {
     );
   }
 
-  void phonepeInit() {
+  Future<void> phonepeInit() async {
+    if (appId.isEmpty) {
+      handleError("Invalid appId!");
+      return;
+    }
 
-    PhonePePaymentSdk.init(environment, appId, merchantId, enableLogging)
-        .then((val) => {
+    await PhonePePaymentSdk.init(environment, appId, merchantId, enableLogging)
+        .then((val) {
       setState(() {
         result = 'PhonePe SDK Initialized - $val';
-      })
-    })
-        .catchError((error) {
+      });
+    }).catchError((error) {
       handleError(error);
-      return <dynamic>{};
     });
 
 
@@ -123,7 +130,7 @@ class _PhonePePaymentState extends State<PhonePePayment> {
             if(status == 'SUCCESS'){
               /// Handing after success transaction
               ///
-              //Navigator.push(context, MaterialPageRoute(builder: (context)=> SuccessScreen(transactionId: '',) ));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> SuccessScreen(transactionId: widget.transactionId, cart: widget.cart, totalAmount: calculateTotalPrice(widget.cart),) ));
               result = "Flow complete - status SUCCESS";
 
 
