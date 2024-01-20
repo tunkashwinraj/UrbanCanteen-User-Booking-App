@@ -16,7 +16,7 @@ class PhoneAuthPage extends StatelessWidget {
       verificationCompleted: (PhoneAuthCredential credential) async {
         UserCredential userCredential = await _auth.signInWithCredential(credential);
         if (userCredential.user != null) {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage(onCartUpdated: (cart) {})));
         }
       },
       verificationFailed: (FirebaseAuthException e) {
@@ -36,7 +36,7 @@ class PhoneAuthPage extends StatelessWidget {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCodeController.text);
     UserCredential userCredential = await _auth.signInWithCredential(credential);
     if (userCredential.user != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage(onCartUpdated: (cart) {})));
     }
   }
 

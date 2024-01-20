@@ -17,7 +17,7 @@ class LoginPage extends StatelessWidget {
       User? user = userCredential.user; // Get the User object, which might be nullable
 
       if (user != null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(onCartUpdated: (cart) {})));
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));

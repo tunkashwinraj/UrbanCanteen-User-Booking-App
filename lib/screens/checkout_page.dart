@@ -50,6 +50,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               onPressed: () async {
                 // Store order details in Firestore
                 await _storeOrderDetails();
+                 _navigateToPhonePeGateway();
 
                 // Navigate to the success page
                 Navigator.of(context).push(
@@ -106,5 +107,24 @@ class _CheckoutPageState extends State<CheckoutPage> {
       total += item.price;
     }
     return total;
+  }
+
+  void _navigateToPhonePeGateway() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PhonePePayment(
+          transactionId: widget.transactionId,
+          cart: widget.cart,
+          totalAmount: calculateTotalPrice(widget.cart),
+        ),
+      ),
+    );
+
+    // Handle the result if needed
+    if (result != null) {
+      // Do something with the result
+      print('Result from PhonePeGatewayPage: $result');
+    }
   }
 }

@@ -20,7 +20,7 @@ class GoogleSignUpPage extends StatelessWidget {
 
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
       if (userCredential.user != null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage(onCartUpdated: (cart) {})));
       }
       return userCredential;
     } catch (e) {

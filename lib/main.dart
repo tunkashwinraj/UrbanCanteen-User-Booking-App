@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:testingproback/auth/screens/googleLogin.dart';
+import 'package:testingproback/bottom_navigation/BottomNavigation.dart';
 import 'package:testingproback/firebase_options.dart';
 import 'package:testingproback/screens/homePage.dart';
 import 'package:testingproback/auth/screens/loginPage.dart';
@@ -20,14 +21,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: BottomNavigation(),
+      initialRoute: '/home',
       routes: {
         '/login': (context) => LoginPage(),
+        '/home': (context) => BottomNavigation(),
         '/google_signup': (context) => GoogleSignUpPage(),
         // Other routes...
       },
     );
   }
 }
+
 
 
