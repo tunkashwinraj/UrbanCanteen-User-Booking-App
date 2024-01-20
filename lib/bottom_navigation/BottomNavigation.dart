@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:testingproback/bottom_navigation/previous_Orders_Page.dart';
 import 'package:testingproback/bottom_navigation/profile_page.dart';
@@ -13,6 +14,7 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   int _currentIndex = 0;
   List<FoodItem> cart = [];
+  UserCredential? userCredential;
   late List<Widget> _pages;
 
   @override
@@ -22,7 +24,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       HomePage(onCartUpdated: _updateCart),
       CartPage(cart: cart),
       PreviousOrdersPage(),
-      ProfilePage(),
+      ProfilePage(user: userCredential?.user),
     ];
   }
   void _updateCart(List<FoodItem> updatedCart) {

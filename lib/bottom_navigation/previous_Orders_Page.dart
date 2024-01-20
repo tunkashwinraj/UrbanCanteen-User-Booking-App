@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:testingproback/bottom_navigation/Previous_order_detail_page.dart';
 import 'package:testingproback/food_items/food_item.dart';
 
 class PreviousOrdersPage extends StatelessWidget {
@@ -70,41 +71,7 @@ class PreviousOrdersPage extends StatelessWidget {
   }
 }
 
-class OrderDetailsPage extends StatelessWidget {
-  final OrderModel order;
 
-  OrderDetailsPage({required this.order});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Order Details'),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Order ID: ${order.transactionId}'),
-          Text('Total Amount: ₹${order.totalAmount.toStringAsFixed(2)}'),
-          Text('Address: ${order.address}'),
-          Text('Payment Method: ${order.paymentMethod}'),
-          Text('Status: ${order.status}'),
-          Text('Timestamp: ${order.timestamp.toDate().toString()}'),
-          Divider(),
-          Text('Items:'),
-          Column(
-            children: order.items.map((item) {
-              return ListTile(
-                title: Text(item['name']),
-                subtitle: Text('₹${item['price'].toStringAsFixed(2)}'),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class OrderModel {
   final String transactionId;
