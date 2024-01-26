@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:testingproback/auth/screens/SignUpPage.dart';
 import 'package:testingproback/screens/homePage.dart';
+import 'package:testingproback/bottom_navigation/BottomNavigation.dart';
 
 class PhoneAuthPage extends StatelessWidget {
   final TextEditingController phoneNumberController = TextEditingController();
@@ -16,7 +16,12 @@ class PhoneAuthPage extends StatelessWidget {
       verificationCompleted: (PhoneAuthCredential credential) async {
         UserCredential userCredential = await _auth.signInWithCredential(credential);
         if (userCredential.user != null) {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage(onCartUpdated: (cart) {})));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(user: userCredential.user),
+            ),
+          );
         }
       },
       verificationFailed: (FirebaseAuthException e) {
@@ -36,7 +41,12 @@ class PhoneAuthPage extends StatelessWidget {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCodeController.text);
     UserCredential userCredential = await _auth.signInWithCredential(credential);
     if (userCredential.user != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage(onCartUpdated: (cart) {})));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(user: userCredential.user),
+        ),
+      );
     }
   }
 
@@ -73,6 +83,19 @@ class PhoneAuthPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  final User? user;
+
+  HomeScreen({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BottomNavigation(),
     );
   }
 }

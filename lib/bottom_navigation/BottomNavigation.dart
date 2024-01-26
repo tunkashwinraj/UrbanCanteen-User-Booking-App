@@ -40,6 +40,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    print("BottomNavigation rebuilt");
     return Scaffold(
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -104,6 +105,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     );
   }
   void _navigateToCart() {
+    print("Navigating to CartPage with cart: $cart");
     Navigator.push(
       context,
       MaterialPageRoute(

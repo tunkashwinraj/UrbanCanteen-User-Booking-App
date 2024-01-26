@@ -8,6 +8,7 @@ import 'package:testingproback/phonepe/success_screen.dart';
 
 
 class PhonePePayment extends StatefulWidget {
+
   final String transactionId;
   final List<FoodItem> cart;
   final double totalAmount;
@@ -25,13 +26,13 @@ class PhonePePayment extends StatefulWidget {
 
 class _PhonePePaymentState extends State<PhonePePayment> {
   String environment = "UAT_SIM";
-  String appId = "com.example.testingproback";
+  String appId = "";
   String merchantId = "PGTESTPAYUAT";
   bool enableLogging = true;
   String checksum = "";
   String saltKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
   String saltIndex = "1";
-  String callbackurl =
+  String callbackUrl =
       "https://webhook.site/eb14caa8-8165-4d30-9eed-c20c96933406";
   String body = "";
   String apiEndPoint = "/pg/v1/pay";
@@ -53,8 +54,8 @@ class _PhonePePaymentState extends State<PhonePePayment> {
       body: Column(
         children: [
           ElevatedButton(
-            onPressed: () async {
-              await phonepeInit();
+            onPressed: ()  {
+
               startPgTransaction();
             },
             child: Text("Start Transaction"),
@@ -84,10 +85,10 @@ class _PhonePePaymentState extends State<PhonePePayment> {
   }
 
   Future<void> phonepeInit() async {
-    if (appId.isEmpty) {
-      handleError("Invalid appId!");
-      return;
-    }
+    // if (appId.isEmpty) {
+    //   handleError("Invalid appId!");
+    //   return;
+    // }
 
     try {
       final isInitialized = await PhonePePaymentSdk.init(
@@ -95,7 +96,15 @@ class _PhonePePaymentState extends State<PhonePePayment> {
         appId,
         merchantId,
         enableLogging,
-      );
+      ).then((val) => {
+        setState(() {
+          result = 'PhonePe SDK Initialized - $val';
+        })
+      })
+          .catchError((error) {
+        handleError(error);
+        return <dynamic>{};
+      });
 
       setState(() {
         result = 'PhonePe SDK Initialized - $isInitialized';
@@ -109,7 +118,7 @@ class _PhonePePaymentState extends State<PhonePePayment> {
     try {
       var response = await PhonePePaymentSdk.startTransaction(
         body,
-        callbackurl,
+        callbackUrl,
         checksum,
         "",
       );
@@ -165,14 +174,13 @@ class _PhonePePaymentState extends State<PhonePePayment> {
       "merchantUserId": FirebaseAuth.instance.currentUser?.uid ?? "",
       "amount": calculateTotalPrice(widget.cart).toString(),
       "mobileNumber": "9999999999",
-      "callbackUrl": callbackurl,
+      "callbackUrl": callbackUrl,
       "paymentInstrument": {"type": "PAY_PAGE"},
     };
 
     String base64Body = base64.encode(utf8.encode(json.encode(requestData)));
 
-    checksum =
-    '${sha256.convert(utf8.encode(base64Body + apiEndPoint + saltKey)).toString()}###$saltIndex';
+    checksum = '${sha256.convert(utf8.encode(base64Body+apiEndPoint+saltKey)).toString()}###$saltIndex';
 
     return base64Body;
   }

@@ -58,6 +58,7 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 cart.add(foodItems[index]);
                 widget.onCartUpdated(cart);
+
               });
             },
             child: Card(

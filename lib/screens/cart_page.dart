@@ -12,13 +12,32 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    print("CartPage initialized. Initial Cart: ${widget.cart}");
+  }
+
+  @override
+  void didUpdateWidget(CartPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("CartPage updated. Updated Cart: ${widget.cart}");
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
+    print("CartPage rebuilt. Cart: ${widget.cart}");
     return Scaffold(
       appBar: AppBar(
         title: Text('Shopping Cart'),
       ),
-      body: ListView.builder(
+      body: widget.cart.isEmpty
+          ? Center(child: Text('Your cart is empty.'))
+          : ListView.builder(
         itemCount: widget.cart.length,
         itemBuilder: (context, index) {
           final foodItem = widget.cart[index];
@@ -28,14 +47,11 @@ class _CartPageState extends State<CartPage> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('₹${foodItem.price.toStringAsFixed(2)}' , style: TextStyle(fontSize: 16.0)),
+                Text('₹${foodItem.price.toStringAsFixed(2)}', style: TextStyle(fontSize: 16.0)),
                 IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () {
-                    setState(() {
-                      widget.cart.removeAt(index);
-                      calculateTotalPrice(widget.cart);
-                    });
+                    _showDeleteConfirmationDialog(index);
                   },
                 ),
               ],
@@ -71,6 +87,36 @@ class _CartPageState extends State<CartPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showDeleteConfirmationDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Remove Item'),
+          content: Text('Are you sure you want to remove this item from your cart?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  widget.cart.removeAt(index);
+                  calculateTotalPrice(widget.cart);
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Remove'),
+            ),
+          ],
+        );
+      },
     );
   }
 
