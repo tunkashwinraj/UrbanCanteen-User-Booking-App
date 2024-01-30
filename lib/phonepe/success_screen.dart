@@ -44,19 +44,25 @@ class _SuccessScreenState extends State<SuccessScreen> {
     });
   }
 
-  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
     print("Handling a background message: ${message.messageId}");
     // Set a flag to indicate that a background message was received
     _backgroundMessageReceived = true;
+    setState(() {});
     // You can add your logic to handle the background message here
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
+    _backgroundMessageReceived = true;
+    setState(() {});
     // Add logic to navigate to the desired page when a notification is tapped or received in the foreground
     if (_backgroundMessageReceived) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const OrderReadyPage()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const OrderReadyPage()));
       // Reset the flag after handling the background message
       _backgroundMessageReceived = false;
+      setState(() {});
     }
   }
 
@@ -79,7 +85,10 @@ class _SuccessScreenState extends State<SuccessScreen> {
   Future<void> _storeUserToken(String userToken) async {
     try {
       // Store the user token in Firestore
-      await FirebaseFirestore.instance.collection('orders').doc(widget.transactionId).set({
+      await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(widget.transactionId)
+          .set({
         'userToken': userToken,
       }, SetOptions(merge: true));
 
@@ -120,7 +129,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   SizedBox(height: 20),
                   Text(
                     "Your unique ID:",
-                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     widget.transactionId,
@@ -131,20 +141,25 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   SizedBox(height: 20),
                   Text(
                     "Billed Items:",
-                    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
                   Column(
-                    children: widget.cart.map((item) => ListTile(
-                      title: Text(item.name),
-                      trailing: Text("₹${item.price.toStringAsFixed(2)}"),
-                    )).toList(),
+                    children: widget.cart
+                        .map((item) => ListTile(
+                              title: Text(item.name),
+                              trailing:
+                                  Text("₹${item.price.toStringAsFixed(2)}"),
+                            ))
+                        .toList(),
                   ),
                   SizedBox(height: 20),
                   Divider(),
                   SizedBox(height: 20),
                   Text(
                     "Total Amount: ₹${widget.totalAmount.toStringAsFixed(2)}",
-                    style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

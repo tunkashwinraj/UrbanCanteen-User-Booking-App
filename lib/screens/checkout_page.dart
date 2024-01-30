@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:testingproback/food_items/food_item.dart';
 import 'package:testingproback/phonepe/PhonePePayment.dart';
@@ -92,6 +93,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         'paymentMethod': paymentMethod,
         'status': 'Pending',
         'timestamp': FieldValue.serverTimestamp(),
+        "uid": FirebaseAuth.instance.currentUser!.uid
       });
 
       print('Order details stored successfully!');

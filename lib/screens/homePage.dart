@@ -4,15 +4,18 @@ import 'package:badges/badges.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:testingproback/auth/screens/loginPage.dart';
+import 'package:testingproback/bottom_navigation/profile_page.dart';
 import 'package:testingproback/screens/cart_page.dart';
 import 'package:testingproback/food_items/food_item.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:testingproback/utils/utilies.dart';
 
+ List<FoodItem> cart = [];
 class HomePage extends StatefulWidget {
+  final List<FoodItem> cart;
   final Function(List<FoodItem>) onCartUpdated;
 
-  HomePage({required this.onCartUpdated});
+  HomePage({required this.onCartUpdated, required this.cart});
 
 
   @override
@@ -28,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     // Add more food items here
   ];
 
-  List<FoodItem> cart = [];
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +40,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () {
+
               FirebaseAuth.instance.currentUser;
               FirebaseAuth.instance.signOut().then((value) {
                 Navigator.push(
@@ -74,6 +78,7 @@ class _HomePageState extends State<HomePage> {
                   // Handle adding the item to the cart
                   setState(() {
                     cart.add(foodItems[index]);
+                    
                      // Notify parent about the update
                   });
                 },
@@ -82,22 +87,7 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
-      floatingActionButton: badges.Badge(
-        badgeContent: Text(cart.length.toString()), // Show the cart item count
-        position:
-        badges.BadgePosition.topEnd(top: -12, end: -12), // Adjust the badge position
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CartPage(cart: cart),
-              ),
-            );
-          },
-          child: Icon(Icons.shopping_cart),
-        ),
-      ),
+      
     );
   }
 }

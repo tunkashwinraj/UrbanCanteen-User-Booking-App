@@ -6,9 +6,7 @@ import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'package:testingproback/food_items/food_item.dart';
 import 'package:testingproback/phonepe/success_screen.dart';
 
-
 class PhonePePayment extends StatefulWidget {
-
   final String transactionId;
   final List<FoodItem> cart;
   final double totalAmount;
@@ -25,8 +23,8 @@ class PhonePePayment extends StatefulWidget {
 }
 
 class _PhonePePaymentState extends State<PhonePePayment> {
-  String environment = "UAT_SIM";
-  String appId = "";
+  String environment = "SANDBOX";
+  String appId = ""; // Set your PhonePe app ID
   String merchantId = "PGTESTPAYUAT";
   bool enableLogging = true;
   String checksum = "";
@@ -34,15 +32,15 @@ class _PhonePePaymentState extends State<PhonePePayment> {
   String saltIndex = "1";
   String callbackUrl =
       "https://webhook.site/eb14caa8-8165-4d30-9eed-c20c96933406";
-  String body = "";
   String apiEndPoint = "/pg/v1/pay";
   Object? result;
+  late String body; // Declare body at the class level
 
   @override
   void initState() {
     super.initState();
+    getChecksum(); // Call getChecksum in initState to set up the checksum
     phonepeInit();
-    body = getChecksum().toString();
   }
 
   @override
@@ -54,8 +52,7 @@ class _PhonePePaymentState extends State<PhonePePayment> {
       body: Column(
         children: [
           ElevatedButton(
-            onPressed: ()  {
-
+            onPressed: () {
               startPgTransaction();
             },
             child: Text("Start Transaction"),
@@ -66,45 +63,36 @@ class _PhonePePaymentState extends State<PhonePePayment> {
             onPressed: () {
               _onBackPressed();
             },
-            child: Text("back"),
-
+            child: Text("Back"),
           ),
           TextButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> SuccessScreen(transactionId: widget.transactionId,
-                cart: widget.cart,
-                totalAmount: calculateTotalPrice(widget.cart),)));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SuccessScreen(
+                    transactionId: widget.transactionId,
+                    cart: widget.cart,
+                    totalAmount: calculateTotalPrice(widget.cart),
+                  ),
+                ),
+              );
             },
-            child: Text("Redirect to succes page"),
-
+            child: Text("Redirect to Success Page"),
           ),
-
         ],
       ),
     );
   }
 
   Future<void> phonepeInit() async {
-    // if (appId.isEmpty) {
-    //   handleError("Invalid appId!");
-    //   return;
-    // }
-
     try {
       final isInitialized = await PhonePePaymentSdk.init(
         environment,
         appId,
         merchantId,
         enableLogging,
-      ).then((val) => {
-        setState(() {
-          result = 'PhonePe SDK Initialized - $val';
-        })
-      })
-          .catchError((error) {
-        handleError(error);
-        return <dynamic>{};
-      });
+      );
 
       setState(() {
         result = 'PhonePe SDK Initialized - $isInitialized';
@@ -171,28 +159,28 @@ class _PhonePePaymentState extends State<PhonePePayment> {
       "merchantId": merchantId,
       "merchantTransactionId":
       "transaction_${DateTime.now().millisecondsSinceEpoch}",
-      "merchantUserId": FirebaseAuth.instance.currentUser?.uid ?? "",
+      "merchantUserId": FirebaseAuth.instance.currentUser?.uid ?? "MUI100",
       "amount": calculateTotalPrice(widget.cart).toString(),
-      "mobileNumber": "9999999999",
+      "mobileNumber": "7673985665",
       "callbackUrl": callbackUrl,
       "paymentInstrument": {"type": "PAY_PAGE"},
     };
 
     String base64Body = base64.encode(utf8.encode(json.encode(requestData)));
 
-    checksum = '${sha256.convert(utf8.encode(base64Body+apiEndPoint+saltKey)).toString()}###$saltIndex';
+    // Set the body variable with the calculated base64Body
+    body = base64Body;
+
+    checksum = '${sha256.convert(utf8.encode(base64Body + apiEndPoint + saltKey)).toString()}###$saltIndex';
 
     return base64Body;
   }
 
-  // In the PhonePe gateway page
   void _onBackPressed() {
-    // Create a map to represent your result data
     Map<String, dynamic> resultData = {
       "KEY": "VALUE",
     };
 
-    // Pop the route with the result data
     Navigator.pop(context, resultData);
   }
 }

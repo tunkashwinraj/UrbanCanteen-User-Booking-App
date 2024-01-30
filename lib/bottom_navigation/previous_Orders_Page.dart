@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:testingproback/bottom_navigation/Previous_order_detail_page.dart';
 import 'package:testingproback/food_items/food_item.dart';
@@ -11,7 +12,10 @@ class PreviousOrdersPage extends StatelessWidget {
         title: Text('Previous Orders'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('orders').snapshots(),
+        stream: FirebaseFirestore.instance.collection('orders').
+        where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid).
+        // where("status", isEqualTo: "Pending").
+        snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());

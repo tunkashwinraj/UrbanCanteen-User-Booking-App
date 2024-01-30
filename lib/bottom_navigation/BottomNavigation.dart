@@ -1,9 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:testingproback/bottom_navigation/previous_Orders_Page.dart';
 import 'package:testingproback/bottom_navigation/profile_page.dart';
 import 'package:testingproback/food_items/food_item.dart';
 import 'package:testingproback/screens/cart_page.dart';
+import 'package:testingproback/screens/checkout_page.dart';
 import 'package:testingproback/screens/homePage.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -12,21 +13,22 @@ class BottomNavigation extends StatefulWidget {
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
+
   int _currentIndex = 0;
-  List<FoodItem> cart = [];
-  UserCredential? userCredential;
   late List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
     _pages = [
-      HomePage(onCartUpdated: _updateCart),
+      HomePage(onCartUpdated: _updateCart, cart: [],),
       CartPage(cart: cart),
       PreviousOrdersPage(),
-      ProfilePage(user: userCredential?.user),
+      ProfilePage(user: null,),
+      CheckoutPage(cart: [], transactionId: 'transactionId'),
     ];
   }
+
   void _updateCart(List<FoodItem> updatedCart) {
     print("Cart updated: $updatedCart");
     setState(() {
@@ -36,11 +38,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
 
 
-
-
   @override
   Widget build(BuildContext context) {
-    print("BottomNavigation rebuilt");
     return Scaffold(
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -59,7 +58,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
           ),
           BottomNavigationBarItem(
             icon: InkWell(
-              onTap: _navigateToCart,
+              onTap: () => _navigateToCart(context),
               child: Stack(
                 children: [
                   Icon(Icons.shopping_cart),
@@ -91,7 +90,6 @@ class _BottomNavigationState extends State<BottomNavigation> {
             ),
             label: 'Cart',
           ),
-
           BottomNavigationBarItem(
             icon: Icon(Icons.history),
             label: 'Previous Orders',
@@ -104,7 +102,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
       ),
     );
   }
-  void _navigateToCart() {
+
+  void _navigateToCart(BuildContext context) {
     print("Navigating to CartPage with cart: $cart");
     Navigator.push(
       context,
@@ -114,3 +113,4 @@ class _BottomNavigationState extends State<BottomNavigation> {
     );
   }
 }
+
