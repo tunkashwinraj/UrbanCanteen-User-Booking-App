@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.testingproback">
+    package="com.tunkinnovations.testingproback">
    <application
-        android:label="testingproback"
+
+        android:label="CMREC Food"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -36,7 +37,7 @@
        <meta-data android:name="com.phonepe.android.sdk.isUAT" android:value="true"/>
        <meta-data android:name="com.phonepe.android.sdk.isSimulator" android:value="true"/>
        <meta-data android:name="com.phonepe.android.sdk.MerchantId" android:value="PGTESTPAYUAT"/>
-      <!-- <meta-data android:name="com.phonepe.android.sdk.AppId" android:value="appId"/> -->
+       <meta-data android:name="com.phonepe.android.sdk.AppId" android:value="appId"/>
 
    </application>
 </manifest>

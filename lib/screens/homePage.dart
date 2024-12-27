@@ -1,76 +1,152 @@
-import 'package:badges/badges.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:testingproback/auth/screens/loginPage.dart';
-import 'package:testingproback/screens/cart_page.dart';
+import 'package:provider/provider.dart';
+import 'package:testingproback/controller/cart_provider.dart';
 import 'package:testingproback/food_items/food_item.dart';
-import 'package:badges/badges.dart' as badges;
-import 'package:testingproback/utils/utilies.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  List<FoodItem> foodItems = [
-    FoodItem(name: 'Manchuria', description: 'Delicious Manchuria', price: 50),
-    FoodItem(name: 'Fried Rice', description: 'Tasty fired rice', price: 40),
-    FoodItem(name: 'Meals', description: 'All mix meals', price: 60),
-    FoodItem(name: 'noodles', description: 'Tasty noodles', price: 40),
-    // Add more food items here
-  ];
-
-  List<FoodItem> cart = [];
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-         actions: [
-           IconButton(onPressed: (){
-             FirebaseAuth.instance.currentUser;
-             FirebaseAuth.instance.signOut().then((value){
-               Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
-             });
-           },
-             icon: Icon(Icons.logout_outlined),)
-         ],
-        title: Text(' CMREC Canteen'),
+        title: Text('CMREC Canteen'),
       ),
-      body: ListView.builder(
-        itemCount: foodItems.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: EdgeInsets.all(8.0),
-            child: ListTile(
-              title: Text(foodItems[index].name),
-              subtitle: Text(foodItems[index].description),
-              trailing: Text('\₹${foodItems[index].price.toStringAsFixed(2)}', style: TextStyle(fontSize: 16.0), ),
-              onTap: () {
-                // Handle adding the item to the cart
-                setState(() {
-                  cart.add(foodItems[index]);
-                });
-              },
-            ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: FoodItemList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FoodItemList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('food_items').where('isVisible', isEqualTo: true).snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
           );
-        },
-      ),
-      floatingActionButton: badges.Badge(
-        badgeContent: Text(cart.length.toString()), // Show the cart item count
-        position: badges.BadgePosition.topEnd(top: -12, end: -12), // Adjust the badge position
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CartPage(cart: cart),
-              ),
-            );
+        }
+        if (snapshot.hasError) {
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        }
+        final foodItems = snapshot.data!.docs.map((doc) => FoodItem.fromSnapshot(doc as QueryDocumentSnapshot<Map<String, dynamic>>)).toList();
+
+        return ListView.builder(
+          itemCount: foodItems.length,
+          itemBuilder: (context, index) {
+            return FoodItemCard(foodItem: foodItems[index]);
           },
-          child: Icon(Icons.shopping_cart),
+        );
+      },
+    );
+  }
+}
+
+class FoodItemCard extends StatelessWidget {
+  final FoodItem foodItem;
+
+  const FoodItemCard({required this.foodItem});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: ListTile(
+          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          title: Text(
+            foodItem.name,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(
+            foodItem.description,
+            style: TextStyle(fontSize: 14),
+          ),
+          trailing: Text(
+            '\₹${foodItem.price.toStringAsFixed(2)}',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          onTap: () {
+            Provider.of<CartProvider>(context, listen: false).addToCart(foodItem);
+            _showSnackbar(context, 'Item added to cart');
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
+}
+
+class Order {
+  final String transactionId;
+  final double totalAmount;
+
+  Order({
+    required this.transactionId,
+    required this.totalAmount,
+  });
+
+  factory Order.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot) {
+    final data = snapshot.data();
+    return Order(
+      transactionId: data['transactionId'] ?? '',
+      totalAmount: (data['totalAmount'] ?? 0).toDouble(),
+    );
+  }
+}
+
+class OrderCard extends StatelessWidget {
+  final Order order;
+
+  const OrderCard({required this.order});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Transaction ID: ${order.transactionId}',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Total Amount: \₹${order.totalAmount.toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
         ),
       ),
     );

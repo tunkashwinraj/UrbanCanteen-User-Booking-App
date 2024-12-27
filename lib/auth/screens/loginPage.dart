@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:testingproback/auth/screens/SignUpPage.dart';
 import 'package:testingproback/auth/screens/forgot_password.dart';
+import 'package:testingproback/auth/screens/phoneAuth.dart';
+import 'package:testingproback/food_items/food_item.dart';
 import 'package:testingproback/screens/homePage.dart';
 
 class LoginPage extends StatelessWidget {
@@ -17,8 +19,15 @@ class LoginPage extends StatelessWidget {
       User? user = userCredential.user; // Get the User object, which might be nullable
 
       if (user != null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PhoneAuthPage(),
+
+          ),
+        );
       }
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }

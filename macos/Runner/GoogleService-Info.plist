@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.testingproback</string>
+	<string>com.tunkinnovations.testingproback</string>
 	<key>PROJECT_ID</key>
 	<string>testingproback</string>
 	<key>STORAGE_BUCKET</key>

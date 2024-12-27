@@ -1,88 +1,26 @@
 {
   "project_info": {
-    "project_number": "181185644616",
-    "firebase_url": "https://testingproback-default-rtdb.firebaseio.com",
-    "project_id": "testingproback",
-    "storage_bucket": "testingproback.appspot.com"
+    "project_number": "183013714894",
+    "project_id": "urbancanteen-4e71e",
+    "storage_bucket": "urbancanteen-4e71e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:181185644616:android:6ce042ca6847246d93b07d",
+        "mobilesdk_app_id": "1:183013714894:android:112849e9232bfa7a5dd99f",
         "android_client_info": {
-          "package_name": "com.example.testingproback"
+          "package_name": "com.tunkinnovations.testingproback"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "181185644616-juhb43b79bdre7n4c8utlcg94scv58dr.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.testingproback",
-            "certificate_hash": "7bcf588eb09f02aa535387c5093c2f07c9dd81e7"
-          }
-        },
-        {
-          "client_id": "181185644616-qgf2sl36feessfc7tn8g0h5dukpe4sri.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyArOsbcBXadBwEXtMsxDUaUjMDKUKyOu8o"
+          "current_key": "AIzaSyB4kA4EsEkNJor5dwAmlSe4i0YybWy4kEU"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "181185644616-qgf2sl36feessfc7tn8g0h5dukpe4sri.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "181185644616-a2nr2rg2okrthejc61vi3nve54g4tkea.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.testingprocant.RunnerTests"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:181185644616:android:02654855087528da93b07d",
-        "android_client_info": {
-          "package_name": "com.example.testingprocant"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "181185644616-qgf2sl36feessfc7tn8g0h5dukpe4sri.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyArOsbcBXadBwEXtMsxDUaUjMDKUKyOu8o"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "181185644616-qgf2sl36feessfc7tn8g0h5dukpe4sri.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "181185644616-a2nr2rg2okrthejc61vi3nve54g4tkea.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.testingprocant.RunnerTests"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

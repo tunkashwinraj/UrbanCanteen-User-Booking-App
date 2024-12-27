@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:testingproback/auth/screens/SignUpPage.dart';
+import 'package:testingproback/bottom_navigation/BottomNavigation.dart';
 import 'package:testingproback/screens/homePage.dart';
 
 class GoogleSignUpPage extends StatelessWidget {
@@ -20,7 +21,7 @@ class GoogleSignUpPage extends StatelessWidget {
 
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
       if (userCredential.user != null) {
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> BottomNavigation()));
       }
       return userCredential;
     } catch (e) {
