@@ -171,6 +171,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                    //null
                     child: Text(
                       "Order Status",
                       style: TextStyle(
