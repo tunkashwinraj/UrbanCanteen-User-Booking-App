@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:testingproback/auth/screens/googleLogin.dart';
+import 'package:testingproback/auth/screens/phoneAuth.dart';
+import 'package:testingproback/screens/Terms_conditions.dart';
+import 'package:testingproback/screens/feedbackForm.dart';
+import 'package:testingproback/screens/refund_policy.dart';
 
 class ProfilePage extends StatelessWidget {
   final User? user;
@@ -14,25 +16,21 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Profile'),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 50,
-              backgroundImage: AssetImage('assets/pro.jpg'),
+              radius: 70,
+              backgroundImage: AssetImage('assets/pro.jpg'), // Replace with your random image
             ),
             SizedBox(height: 16),
             Text(
-              'Name: ${user?.displayName ?? ''}',
+              'Phone Number: ${FirebaseAuth.instance.currentUser!.phoneNumber ?? 'N/A'}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
-            Text(
-              'Email: ${user?.email ?? ''}',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 16),
+            SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
                 // Implement sign out functionality
@@ -40,6 +38,60 @@ class ProfilePage extends StatelessWidget {
               },
               child: Text('Sign Out'),
             ),
+            SizedBox(height: 32),
+            ListTile(
+              title: Text("Provide Feedback"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FeedbackForm(),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
+              title: Text("Terms & Conditions"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TermsConditions(),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+            ListTile(
+              title: Text("Refund Policy"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RefundPolicy(),
+                  ),
+                );
+              },
+            ),
+            Divider(),
+            Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Text(
+                    'Developed & Designed by Tunk Innovations Private Limited',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Text("Version: 1.0.5 "),
           ],
         ),
       ),
@@ -48,21 +100,20 @@ class ProfilePage extends StatelessWidget {
 
   Future<void> _signOut(BuildContext context) async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    final GoogleSignIn googleSignIn = GoogleSignIn();
 
     try {
-      await googleSignIn.signOut();
       await _auth.signOut();
 
-      // Navigate to the GoogleSignUpPage after signing out
+      // Navigate to the PhoneAuthPage after signing out
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => GoogleSignUpPage(),
+          builder: (context) => PhoneAuthPage(),
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to sign out: $e')));
     }
   }
-
 }
+
+///original

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
 import 'package:testingproback/food_items/food_item.dart';
@@ -23,12 +24,12 @@ class PhonePePayment extends StatefulWidget {
 }
 
 class _PhonePePaymentState extends State<PhonePePayment> {
-  String environment = "SANDBOX";
+  String environment = "PRODUCTION";
   String appId = ""; // Set your PhonePe app ID
-  String merchantId = "PGTESTPAYUAT";
+  String merchantId = "M22UYPT1HNCZA";
   bool enableLogging = true;
   String checksum = "";
-  String saltKey = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399";
+  String saltKey = "e329ecf7-11c4-4815-93e0-03e31843b3d7";
   String saltIndex = "1";
   String callbackUrl =
       "https://webhook.site/eb14caa8-8165-4d30-9eed-c20c96933406";
@@ -36,11 +37,15 @@ class _PhonePePaymentState extends State<PhonePePayment> {
   Object? result;
   late String body; // Declare body at the class level
 
+
+
   @override
   void initState() {
+
     super.initState();
     getChecksum(); // Call getChecksum in initState to set up the checksum
     phonepeInit();
+
   }
 
   @override
@@ -50,36 +55,37 @@ class _PhonePePaymentState extends State<PhonePePayment> {
         title: Text("Phonepe Payment Gateway"),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(
-            onPressed: () {
-              startPgTransaction();
-            },
-            child: Text("Start Transaction"),
+          Align(
+            alignment: Alignment.center,
+            child: ElevatedButton(
+              onPressed: () {
+                startPgTransaction();
+              },
+              child: Text("Pay Now"),
+            ),
           ),
           SizedBox(height: 20),
-          Text("Result \n $result"),
+          //Text("Result \n $result"),
           TextButton(
             onPressed: () {
               _onBackPressed();
             },
             child: Text("Back"),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SuccessScreen(
-                    transactionId: widget.transactionId,
-                    cart: widget.cart,
-                    totalAmount: calculateTotalPrice(widget.cart),
-                  ),
-                ),
-              );
-            },
-            child: Text("Redirect to Success Page"),
-          ),
+          // TextButton(
+          //   onPressed: () {
+          //     Navigator.push(context, MaterialPageRoute(builder: (context)=> SuccessScreen(
+          //       transactionId: widget.transactionId,
+          //       cart: widget.cart,
+          //       totalAmount: calculateTotalPrice(widget.cart),
+          //     ),));
+          //   },
+          //   child: Text("Back"),
+          // ),
+
         ],
       ),
     );
@@ -160,7 +166,8 @@ class _PhonePePaymentState extends State<PhonePePayment> {
       "merchantTransactionId":
       "transaction_${DateTime.now().millisecondsSinceEpoch}",
       "merchantUserId": FirebaseAuth.instance.currentUser?.uid ?? "MUI100",
-      "amount": calculateTotalPrice(widget.cart).toString(),
+      "amount": widget.totalAmount.toInt() * 100,
+      //"amount": calculateTotalPrice(widget.cart).toString(),
       "mobileNumber": "7673985665",
       "callbackUrl": callbackUrl,
       "paymentInstrument": {"type": "PAY_PAGE"},
@@ -170,9 +177,13 @@ class _PhonePePaymentState extends State<PhonePePayment> {
 
     // Set the body variable with the calculated base64Body
     body = base64Body;
+    //print("Body value********************************");
 
+    //print(body);
+    // print("base64 value********************************");
+    // print(base64Body);
     checksum = '${sha256.convert(utf8.encode(base64Body + apiEndPoint + saltKey)).toString()}###$saltIndex';
-
+    //print(checksum);
     return base64Body;
   }
 

@@ -44,46 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA-8YndqEv0FEXE2T4LHpZVo3vSt-SdDdI',
-    appId: '1:181185644616:web:e819f5a96e7de35393b07d',
-    messagingSenderId: '181185644616',
-    projectId: 'testingproback',
-    authDomain: 'testingproback.firebaseapp.com',
-    databaseURL: 'https://testingproback-default-rtdb.firebaseio.com',
-    storageBucket: 'testingproback.appspot.com',
-    measurementId: 'G-9XQLG15P7P',
+    apiKey: 'AIzaSyB7cuSjFCsaAhezYmneeW0gBQ42R5ns7Ts',
+    appId: '1:669299278585:web:d6aaa096fa363eb1e59828',
+    messagingSenderId: '669299278585',
+    projectId: 'urbanruchi',
+    authDomain: 'urbanruchi.firebaseapp.com',
+    storageBucket: 'urbanruchi.appspot.com',
+    measurementId: 'G-YKWZH2M5GD',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyArOsbcBXadBwEXtMsxDUaUjMDKUKyOu8o',
-    appId: '1:181185644616:android:6ce042ca6847246d93b07d',
-    messagingSenderId: '181185644616',
-    projectId: 'testingproback',
-    databaseURL: 'https://testingproback-default-rtdb.firebaseio.com',
-    storageBucket: 'testingproback.appspot.com',
+    apiKey: 'AIzaSyBCz4T7fWvTxkM51tyzDNe4H-fTP96x5mI',
+    appId: '1:669299278585:android:a7b93ac2e2f71cd3e59828',
+    messagingSenderId: '669299278585',
+    projectId: 'urbanruchi',
+    storageBucket: 'urbanruchi.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBz8K7YjZTszjjWcvA5hHitUwh2QXjFub8',
-    appId: '1:181185644616:ios:f1b4391f1411a74a93b07d',
-    messagingSenderId: '181185644616',
-    projectId: 'testingproback',
-    databaseURL: 'https://testingproback-default-rtdb.firebaseio.com',
-    storageBucket: 'testingproback.appspot.com',
-    androidClientId: '181185644616-juhb43b79bdre7n4c8utlcg94scv58dr.apps.googleusercontent.com',
-    iosClientId: '181185644616-8vf9nnpi5c4eninb642ik8m8f5s51mb4.apps.googleusercontent.com',
-    iosBundleId: 'com.example.testingproback',
+    apiKey: 'AIzaSyDedEqKd_cIX-rIGUvag65nrEtyrYUUhxE',
+    appId: '1:669299278585:ios:534b950830792c5fe59828',
+    messagingSenderId: '669299278585',
+    projectId: 'urbanruchi',
+    storageBucket: 'urbanruchi.appspot.com',
+    iosBundleId: 'com.tunkinnovations.testingproback',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBz8K7YjZTszjjWcvA5hHitUwh2QXjFub8',
-    appId: '1:181185644616:ios:f1b4391f1411a74a93b07d',
-    messagingSenderId: '181185644616',
-    projectId: 'testingproback',
-    databaseURL: 'https://testingproback-default-rtdb.firebaseio.com',
-    storageBucket: 'testingproback.appspot.com',
-    androidClientId: '181185644616-juhb43b79bdre7n4c8utlcg94scv58dr.apps.googleusercontent.com',
-    iosClientId: '181185644616-8vf9nnpi5c4eninb642ik8m8f5s51mb4.apps.googleusercontent.com',
-    iosBundleId: 'com.example.testingproback',
+    apiKey: 'AIzaSyDedEqKd_cIX-rIGUvag65nrEtyrYUUhxE',
+    appId: '1:669299278585:ios:534b950830792c5fe59828',
+    messagingSenderId: '669299278585',
+    projectId: 'urbanruchi',
+    storageBucket: 'urbanruchi.appspot.com',
+    iosBundleId: 'com.tunkinnovations.testingproback',
   );
 }
